@@ -8,7 +8,7 @@ module WorkList
       @failures = 0
     end
 
-    def success(result)
+    def record_success(result)
       @successes += 1
       @items << {
         result: result,
@@ -17,7 +17,7 @@ module WorkList
       }
     end
 
-    def failure(exception)
+    def record_failure(exception)
       @failures += 1
       @items << {
         result: nil,
@@ -43,11 +43,39 @@ module WorkList
     end
 
     def failure?
-      !success? && !noop?
+      @failures > 0
     end
 
     def noop?
       @items.empty?
+    end
+
+    def all_failures?
+      failure_rate == 1.0
+    end
+
+    def failure_rate
+      if noop?
+        0
+      else
+        Rational(@failures, @items.count)
+      end
+    end
+
+    def raise_if_failure
+      raise_exception if failure?
+    end
+
+    def raise_if_all_failures
+      raise_exception if all_failures?
+    end
+
+    def raise_if_failure_rate(threshold)
+      raise_exception if failure_rate >= threshold
+    end
+
+    def raise_exception
+      raise exceptions.first
     end
   end
 end

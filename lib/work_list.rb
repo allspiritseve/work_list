@@ -7,17 +7,12 @@ module WorkList
 
     items.each do |item|
       begin
-        results.success(block.call(item))
+        results.record_success(block.call(item))
       rescue => exception
-        results.failure(exception)
+        results.record_failure(exception)
       end
     end
 
-    if results.failure?
-      # Raise the first exception, as if we weren't rescuing them.
-      raise results.exceptions.first
-    else
-      results
-    end
+    results
   end
 end
