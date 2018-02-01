@@ -27,4 +27,16 @@ class WorkListTest < Minitest::Test
     results.record_failure(Exception.new('error'))
     assert_equal 2 / 3.0, results.failure_rate
   end
+
+  def test_each_result
+    squares = []
+    result = WorkList.perform([1, 2, 3]) do |n|
+      raise "even number" if n % 2 == 0
+      n ** 2
+    end.each_result do |item|
+      squares << item
+    end
+    assert_equal [1, 9], squares
+    assert_raises { result.raise_if_failure }
+  end
 end

@@ -30,8 +30,18 @@ module WorkList
       @items.select { |item| item[:success] }.map { |item| item[:result] }
     end
 
+    def each_result(&block)
+      results.each(&block)
+      self
+    end
+
     def exceptions
       @items.reject { |item| item[:success] }.map { |item| item[:exception] }
+    end
+
+    def each_exception(&block)
+      results.each(&block)
+      self
     end
 
     def outcomes
