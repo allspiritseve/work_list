@@ -40,7 +40,7 @@ module WorkList
     end
 
     def each_exception(&block)
-      results.each(&block)
+      exceptions.each(&block)
       self
     end
 
